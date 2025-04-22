@@ -1,0 +1,115 @@
+/* Reset & Base Styles */
+body {
+  margin: 0;
+  padding: 2rem;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #1e1e2f, #34314c);
+  color: #fff;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+h1 {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  color: #ffffff;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+}
+
+.form-group {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  padding: 1.2rem;
+  margin-bottom: 1.5rem;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+label {
+  font-size: 1rem;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #00ffc3;
+}
+
+p {
+  font-size: 0.95rem;
+  color: #ddd;
+  margin: 0.3rem 0 0;
+}
+
+a {
+  color: #00b7ff;
+  text-decoration: none;
+  font-weight: bold;
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  color: #00ffc3;
+  text-decoration: underline;
+}
+
+/* Save Button */
+#save-button {
+  display: block;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  font-weight: bold;
+  background: linear-gradient(135deg, #00ffc3, #00b7ff);
+  color: #000;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 14px rgba(0, 255, 195, 0.3);
+}
+
+#save-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(0, 255, 195, 0.4);
+}
+
+#save-button:active {
+  transform: scale(0.98);
+}
+
+/* Success Message */
+.success-message {
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  border-left: 4px solid #00ffc3;
+  background: rgba(0, 255, 195, 0.1);
+  color: #00ffc3;
+  font-weight: bold;
+  border-radius: 8px;
+  display: none; /* Show dynamically with JS */
+}
+
+input[type="text"] {
+  width: 100%;
+  padding: 0.65rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  font-size: 1rem;
+  outline: none;
+  transition: all 0.3s ease;
+  margin-bottom: 0.5rem;
+  backdrop-filter: blur(8px);
+}
+
+input[type="text"]::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+input[type="text"]:focus {
+  border-color: #00ffc3;
+  box-shadow: 0 0 6px rgba(0, 255, 195, 0.6);
+  background: rgba(255, 255, 255, 0.08);
+}
