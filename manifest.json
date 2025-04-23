@@ -2,10 +2,15 @@
   "manifest_version": 3,
   "name": "Summarize.ai",
   "version": "1.0",
+  "icons": {
+    "16": "public/icon_16.png",
+    "48": "public/icon_48.png",
+    "128": "public/icon_128.png"
+  },
   "permissions": ["scripting", "activeTab", "storage"],
   "action": {
     "default_popup": "popup.html",
-    "default_icon": "icon.png"
+    "default_icon": "public/icon.png"
   },
   "content_scripts": [
     {
