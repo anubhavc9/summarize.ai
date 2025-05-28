@@ -5,8 +5,9 @@ document.getElementById("summarize").addEventListener("click", () => {
 
   result.innerText = "Summarizing...";
 
-  // 1. Static Gemini API key
-  const geminiApiKey = ""; // Replace with your actual Gemini API key
+  // 1. GEMINI_API_KEY is stored as an environment variable in Netlify & used by a serverless function
+  // The API is deployed at: https://gemini-proxy-summarize-ai.netlify.app/.netlify/functions/summarize
+  // This API handles the summarization using the Gemini API. We just need to call this API.
 
   // 2. Ask content.js for the page text
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
@@ -36,11 +37,7 @@ document.getElementById("summarize").addEventListener("click", () => {
 
         // 3. Send text to Gemini for summarization
         try {
-          const summary = await getGeminiSummary(
-            response.text,
-            summaryType,
-            geminiApiKey
-          );
+          const summary = await getGeminiSummary(response.text, summaryType);
           // 4. Display the summary in the popup
           result.innerText = summary;
         } catch (error) {
@@ -51,44 +48,30 @@ document.getElementById("summarize").addEventListener("click", () => {
   });
 });
 
-async function getGeminiSummary(text, summaryType, apiKey) {
+async function getGeminiSummary(text, summaryType) {
   const max = 20000;
   if (text.length > max) {
     text = text.slice(0, max);
   }
 
-  const promptMap = {
-    brief: "Summarize the following text in a brief and concise manner:\n\n",
-    detailed:
-      "Summarize the following text in a detailed and comprehensive manner:\n\n",
-    bullets: "Summarize the following text in bullet points:\n\n",
-  };
-
-  const prompt = (promptMap[summaryType] || promptMap.brief) + text;
-  console.log("prompt", prompt);
-
-  const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+  const proxyResponse = await fetch(
+    "https://gemini-proxy-summarize-ai.netlify.app/.netlify/functions/summarize",
     {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: { temperature: 0.2 },
+        text: text,
+        summaryType: summaryType,
       }),
     }
   );
 
-  if (!response.ok) {
+  if (!proxyResponse.ok) {
     const { error } = await response.json();
     throw new Error("Failed to fetch summary: " + response.statusText);
   }
-  const data = await response.json();
-  return (
-    data?.candidates?.[0]?.content?.parts?.[0]?.text || "No summary available."
-  );
+  const data = await proxyResponse.json();
+  return data?.summary || "No summary available.";
 }
 
 document.getElementById("copy-btn").addEventListener("click", () => {
