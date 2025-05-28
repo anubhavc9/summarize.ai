@@ -95,3 +95,25 @@ document.getElementById("copy-btn").addEventListener("click", () => {
       alert("Failed to copy text.");
     });
 });
+
+// Text-to-Speech
+document.getElementById("tts-btn").addEventListener("click", () => {
+  const text = document.getElementById("result").innerText;
+  if (!text) return;
+  const utter = new window.SpeechSynthesisUtterance(text);
+  utter.lang = "en-US";
+  window.speechSynthesis.cancel();
+  window.speechSynthesis.speak(utter);
+});
+
+// Font size controls
+const resultEl = document.getElementById("result");
+let fontSize = 0.95;
+document.getElementById("font-increase").addEventListener("click", () => {
+  fontSize = Math.min(fontSize + 0.1, 2);
+  resultEl.style.fontSize = fontSize + "rem";
+});
+document.getElementById("font-decrease").addEventListener("click", () => {
+  fontSize = Math.max(fontSize - 0.1, 0.7);
+  resultEl.style.fontSize = fontSize + "rem";
+});
