@@ -5,53 +5,49 @@ document.getElementById("summarize").addEventListener("click", () => {
 
   result.innerText = "Summarizing...";
 
-  // 1. Get user's API key from storage
-  chrome.storage.sync.get(["geminiApiKey"], ({ geminiApiKey }) => {
-    if (!geminiApiKey) {
-      result.textContent = "No API key set. Click the gear icon to set it.";
+  // 1. Static Gemini API key
+  const geminiApiKey = ""; // Replace with your actual Gemini API key
+
+  // 2. Ask content.js for the page text
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    if (tabs.length === 0) {
+      result.innerText = "No active tab found.";
       return;
     }
-    // 2. Ask content.js for the page text
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      if (tabs.length === 0) {
-        result.innerText = "No active tab found.";
-        return;
-      }
 
-      chrome.tabs.sendMessage(
-        tabs[0].id,
-        { type: "GET_ARTICLE_TEXT" },
-        async (response) => {
-          if (chrome.runtime.lastError) {
-            console.error(
-              "Error sending message:",
-              chrome.runtime.lastError.message
-            );
-            result.innerText =
-              "Could not connect to content script. Make sure it's running on this page.";
-            return;
-          }
-
-          if (!response || !response.text) {
-            result.innerText = "Couldn't extract text from the page.";
-            return;
-          }
-
-          // 3. Send text to Gemini for summarization
-          try {
-            const summary = await getGeminiSummary(
-              response.text,
-              summaryType,
-              geminiApiKey
-            );
-            // 4. Display the summary in the popup
-            result.innerText = summary;
-          } catch (error) {
-            result.innerText = "Error summarizing text: " + error.message;
-          }
+    chrome.tabs.sendMessage(
+      tabs[0].id,
+      { type: "GET_ARTICLE_TEXT" },
+      async (response) => {
+        if (chrome.runtime.lastError) {
+          console.error(
+            "Error sending message:",
+            chrome.runtime.lastError.message
+          );
+          result.innerText =
+            "Could not connect to content script. Make sure it's running on this page.";
+          return;
         }
-      );
-    });
+
+        if (!response || !response.text) {
+          result.innerText = "Couldn't extract text from the page.";
+          return;
+        }
+
+        // 3. Send text to Gemini for summarization
+        try {
+          const summary = await getGeminiSummary(
+            response.text,
+            summaryType,
+            geminiApiKey
+          );
+          // 4. Display the summary in the popup
+          result.innerText = summary;
+        } catch (error) {
+          result.innerText = "Error summarizing text: " + error.message;
+        }
+      }
+    );
   });
 });
 
